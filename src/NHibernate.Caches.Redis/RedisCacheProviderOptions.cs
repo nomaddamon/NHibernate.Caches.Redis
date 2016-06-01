@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using NHibernate.Cache;
 using StackExchange.Redis;
 
 namespace NHibernate.Caches.Redis
@@ -64,8 +65,17 @@ namespace NHibernate.Caches.Redis
 		/// If NHibernate.Caches.Redis is the only user of given Redis Database, can be set to NULL to reduce key length
 		/// </summary>
 		public string CacheNamespacePrefix { get; set; } = "NHibernate-Cache:";
+		/// <summary>
+		/// Gets or sets a flag whether to disable index set on cache keys.
+		/// This option can be set to individual regions via <see cref="RedisCacheConfiguration.DisableIndexSetOnKeys"/>
+		/// Disabling index set on keys is not advised unless it provides measurable performance improvement to your specific workload.
+		/// It is only advisable to enable this option if almost no calls are made to <see cref="ICache.Clear"/> and size of key index becomes a problem.
+		/// Enabling this option will cause <see cref="ICache.Clear"/> to execute in unpredictable time (and at least an order of magnitude slower)
+		/// Might cause server lockup on Redis &lt; 2.8.0 due to usage of KEYS command in <see cref="ICache.Clear"/>
+		/// </summary>
+		public bool DisableIndexSetOnKeys { get; set; }
 
-	    public RedisCacheProviderOptions()
+		public RedisCacheProviderOptions()
         {
             Serializer = new NetDataContractCacheSerializer();
             AcquireLockRetryStrategy = new ExponentialBackoffWithJitterAcquireLockRetryStrategy();

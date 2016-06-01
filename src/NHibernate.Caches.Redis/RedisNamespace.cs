@@ -6,11 +6,13 @@ namespace NHibernate.Caches.Redis
     {
         private readonly string prefix;
         private readonly string setOfActiveKeysKey;
+		private readonly string keyPattern;
 
         public RedisNamespace(string prefix)
         {
             this.prefix = prefix;
             this.setOfActiveKeysKey = prefix + ":keys";
+            this.keyPattern = prefix + ":*";
         }
 
         public string GetSetOfActiveKeysKey()
@@ -18,7 +20,12 @@ namespace NHibernate.Caches.Redis
             return setOfActiveKeysKey;
         }
 
-        public string GetKey(object key)
+		public string GetKeyPattern()
+		{
+			return keyPattern;
+		}
+
+		public string GetKey(object key)
         {
             return prefix + ":" + key;
         }

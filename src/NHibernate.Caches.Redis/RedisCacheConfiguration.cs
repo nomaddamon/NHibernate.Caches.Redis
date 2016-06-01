@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NHibernate.Cache;
 using NHibernate.Util;
 
 namespace NHibernate.Caches.Redis
@@ -50,6 +51,15 @@ namespace NHibernate.Caches.Redis
         /// for the item. By default, this is the same as the lock timeout.
         /// </summary>
         public TimeSpan AcquireLockTimeout { get; set; }
+		/// <summary>
+		/// Gets or sets a flag whether to disable index set on cache keys.
+		/// Defaults to <see cref="RedisCacheProviderOptions.DisableIndexSetOnKeys"/> which defaults to false.
+		/// Disabling index set on keys is not advised unless it provides measurable performance improvement to your specific workload.
+		/// It is only advisable to enable this option if almost no calls are made to <see cref="ICache.Clear"/> and size of key index becomes a problem.
+		/// Enabling this option will cause <see cref="ICache.Clear"/> to execute in unpredictable time (and at least an order of magnitude slower).
+		/// Might cause server lockup on Redis &lt; 2.8.0 due to usage of KEYS command in <see cref="ICache.Clear"/>
+		/// </summary>
+		public bool? DisableIndexSetOnKeys { get; set; }
 
         /// <summary>
         /// Default constructor.
